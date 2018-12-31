@@ -60,6 +60,7 @@ public class Crawler {
 		
 		String html = element.html();
 		
+		// TODO check the string replacement more rigorously
 		html = html
 			.replaceAll("&nbsp;", " ")
 			.replaceAll("<br>", "\n")
