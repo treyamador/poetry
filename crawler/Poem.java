@@ -7,6 +7,7 @@ public class Poem {
 	public String author = "";
 	public String poem = "";
 	
+	
 	public void print() {
 		System.out.println(title);
 		System.out.println(author);

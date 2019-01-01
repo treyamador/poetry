@@ -1,15 +1,8 @@
 package crawler;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.Charset;
 
 import java.util.ArrayList;
-
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.MalformedURLException;
+import java.io.IOException;
 
 import org.jsoup.Jsoup;
 import org.jsoup.select.Elements;
@@ -25,37 +18,14 @@ public class Crawler {
 	}
 	
 	
-	public String connect(String url) {
-		
-		String html = null;
-		
+	public Document connect(String url) {
+		Document doc = null;
 		try {
-			
-			URLConnection connection = new URL(url).openConnection();
-			connection.setRequestProperty("User-Agent", 
-					"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
-			connection.connect();
-			
-			BufferedReader r  = new BufferedReader(
-				new InputStreamReader(
-					connection.getInputStream(), 
-					Charset.forName("UTF-8")));
-			StringBuilder sb = new StringBuilder();
-			
-			String line;
-			while ((line = r.readLine()) != null)
-			    sb.append(line);
-			
-			html = sb.toString();
-			
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
+			doc = Jsoup.connect(url).get();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		return html;
-		
+		return doc;
 	}
 	
 	
@@ -63,7 +33,6 @@ public class Crawler {
 		
 		String html = element.html();
 		
-		// TODO check the string replacement more rigorously
 		html = html
 			.replaceAll("&nbsp;", " ")
 			.replaceAll("<br>", "\n")
@@ -79,10 +48,8 @@ public class Crawler {
 	}
 	
 	
-	public Poem parse(String html) {
+	public Poem parse(Document doc) {
 		
-		Document doc = Jsoup.parse(html);
-
 		try {
 			
 			Element author = doc.select("span[itemprop=name]").first();
@@ -107,8 +74,7 @@ public class Crawler {
 	}
 	
 	
-	public ArrayList<String> link(String html) {
-		Document doc = Jsoup.parse(html);		
+	public ArrayList<String> link(Document doc) {
 		Elements content = doc.select("div.view-poems tbody td.views-field-title a");
 		ArrayList<String> links = new ArrayList<String>();
 		for (Element field : content)
@@ -117,16 +83,15 @@ public class Crawler {
 	}
 	
 	
-	
 	public Poem collectParsedPoem(String url) {
-		String html = this.connect(url);
+		Document html = this.connect(url);
 		Poem poem = this.parse(html);
 		return poem;
 	}
 	
 	
 	public ArrayList<String> collectLinks(String url) {
-		String html = this.connect(url);
+		Document html = this.connect(url);
 		ArrayList<String> links = this.link(html);
 		return links;
 	}

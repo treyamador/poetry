@@ -1,64 +1,7 @@
 package crawler;
 
 
-
-/*
-
-	import java.sql.Connection;
-	import java.sql.DriverManager;
-	import java.sql.SQLException;
-	import java.sql.Statement;
-	import java.sql.ResultSet;
-	
-	// assume that conn is an already created JDBC connection (see previous examples)
-	
-	Statement stmt = null;
-	ResultSet rs = null;
-	
-	try {
-	    stmt = conn.createStatement();
-	    rs = stmt.executeQuery("SELECT foo FROM bar");
-	
-	    // or alternatively, if you don't know ahead of time that
-	    // the query will be a SELECT...
-	
-	    if (stmt.execute("SELECT foo FROM bar")) {
-	        rs = stmt.getResultSet();
-	    }
-	
-	    // Now do something with the ResultSet ....
-	}
-	catch (SQLException ex){
-	    // handle any errors
-	    System.out.println("SQLException: " + ex.getMessage());
-	    System.out.println("SQLState: " + ex.getSQLState());
-	    System.out.println("VendorError: " + ex.getErrorCode());
-	}
-	finally {
-	    // it is a good idea to release
-	    // resources in a finally{} block
-	    // in reverse-order of their creation
-	    // if they are no-longer needed
-	
-	    if (rs != null) {
-	        try {
-	            rs.close();
-	        } catch (SQLException sqlEx) { } // ignore
-	
-	        rs = null;
-	    }
-	
-	    if (stmt != null) {
-	        try {
-	            stmt.close();
-	        } catch (SQLException sqlEx) { } // ignore
-	
-	        stmt = null;
-	    }
-	}
-
-*/
-
+import java.util.ArrayList;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -75,6 +18,10 @@ public class Database {
 	private Connection connect = null;
 	
 	
+	private final int DEFAULT_SUBSECTION_LENGTH = 250;
+	private final String TEXT_COLUMN_NAME = "Text";
+	
+	
     public Database(String db, String user, String pwd) {
     	this.init(db, user, pwd);
     }
@@ -87,7 +34,6 @@ public class Database {
 					"jdbc:mysql://localhost/" + db + "?" + 
 							"user=" + user + "&password=" + pwd +
 							"&allowPublicKeyRetrieval=true&useSSL=false");
-			// Statement statement = this.connect.createStatement();
 		} catch (ClassNotFoundException e) {
 			System.out.println("ERROR! "+ e.getMessage());
 		} catch (SQLException e) {
@@ -124,7 +70,114 @@ public class Database {
     	
     }
     
+    
+    private int getSubsectionPrecision() {
+    	
+    	int precision = this.DEFAULT_SUBSECTION_LENGTH;
+    	
+    	try {
+    		
+    		ResultSetMetaData metadata = this.getMetaData("Poemsection");
+			for (int i = 1; i <= metadata.getColumnCount(); ++i) {
+				String column_name = metadata.getColumnName(i);
+				if (column_name == this.TEXT_COLUMN_NAME) {
+					precision = metadata.getPrecision(i);
+				}
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+    	
+    	return precision;
+    	
+    }
+    
+    
+    private ArrayList<String> createSubsections(Poem poem) {
+    	
+    	int len_text = poem.poem.length();
+    	int subsect_prec = this.getSubsectionPrecision();
+	    int num_subsects = (int)(len_text / subsect_prec) + 1;
+		
+	    ArrayList<String> subsects = new ArrayList<String>();
+    	for (int i = 0; i < num_subsects; ++i) {
+    		
+    		int sub_i = i*subsect_prec,
+    			sub_f = (i+1)*subsect_prec;
+    		if (sub_i < len_text) {
+    			String subsect = poem.poem.substring(sub_i, 
+    					sub_f < len_text ? sub_f : len_text-1);
+    			subsects.add(subsect);
+    		}
+    		
+    	}
+    	
+    	return subsects;
+    	
+    }
+    
+    
+    private String createSubsectionInsert(String url, Poem poem) {
+    	
+    	String query = "INSERT into Poem(Title, NumSections, Date, PoetID, URL) VALUES ";
+    	
+    	int len_text = poem.poem.length();
+    	int subsect_prec = this.getSubsectionPrecision();
+	    int num_subsects = (int)(len_text / subsect_prec) + 1;
+		
+	    System.out.println(subsect_prec+"\n");
+    	for (int i = 0; i < num_subsects; ++i) {
+    		
+    		int sub_i = i*subsect_prec;
+    		int sub_f = (i+1)*subsect_prec;
+    		if (sub_i < len_text) {
+    			String subsect = poem.poem.substring(sub_i, 
+    					sub_f < len_text ? sub_f : len_text-1);
+    			System.out.println(subsect+"\n");
+    		}
+    		
+    	}
+    	
+    	return query;
+    	
+    }
+    
+    
+    public boolean insert(String url, Poem poem) {
+    	
+    	try {
+			
+    		Statement statement = this.connect.createStatement();
+    		ArrayList<String> subsections = this.createSubsections(poem);
+    		
+    		for (int i = 0; i < subsections.size(); ++i) {
+    			System.out.println(subsections.get(i)+"\n\n");
+    		}
+    		
+			
+    		// statement.executeQuery("");
+			
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	
+    	
+    	return false;
+    }
+    
 	
 
 }
+
+
+
+
+
+
+
+
+
 

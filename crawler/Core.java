@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+// import org.jsoup.nodes.Document;
 
 
 public class Core {
@@ -29,7 +30,13 @@ public class Core {
 	
 	
 	public void run() {
+				
+		this.insertTest();
 		
+	}
+	
+	
+	public void collectPoems() {
 		
 		int ext_i = 1, ext_f = 947;
 		
@@ -58,22 +65,35 @@ public class Core {
 				this.pause(10);
 			}
 		}
-				
+		
+	}
+	
+	
+	public void insertTest() {
+		
+		ArrayList<String> urls = new ArrayList<String>();
+		urls.add("https://www.poets.org/poetsorg/poem/house-called-tomorrow");
+		for (int i = 0; i < urls.size(); ++i) {
+			Poem poem = this.crawler.collectParsedPoem(urls.get(i));
+			this.database.insert(urls.get(i), poem);
+		}
+		
 	}
 	
 	
 	public void crawlTest() {
 		
 		ArrayList<String> urls = new ArrayList<String>();
-		urls.add("https://www.poets.org/poetsorg/poem/sea-glass");
-		urls.add("https://www.poets.org/poetsorg/poem/modern-love-x");
-		urls.add("https://www.poets.org/poetsorg/poem/largo");
-		urls.add("https://www.poets.org/poetsorg/poem/triple-moments-light-industry");
-		urls.add("https://www.poets.org/poetsorg/poem/winter-walk");
+		//urls.add("https://www.poets.org/poetsorg/poem/sea-glass");
+		//urls.add("https://www.poets.org/poetsorg/poem/modern-love-x");
+		//urls.add("https://www.poets.org/poetsorg/poem/largo");
+		//urls.add("https://www.poets.org/poetsorg/poem/triple-moments-light-industry");
+		//urls.add("https://www.poets.org/poetsorg/poem/winter-walk");
+		//urls.add("https://www.poets.org/poetsorg/poem/we-may-no-longer-consider-end");
+		urls.add("https://www.poets.org/poetsorg/poem/house-called-tomorrow");
 		
 		for (int i = 0; i < urls.size(); ++i) {
-			String html = this.crawler.connect(urls.get(i));
-			Poem poem = this.crawler.parse(html);
+			Poem poem = this.crawler.collectParsedPoem(urls.get(i));
 			poem.print();
 			this.pause(10);
 		}
