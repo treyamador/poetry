@@ -5,11 +5,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 
+import java.util.ArrayList;
+
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.MalformedURLException;
 
 import org.jsoup.Jsoup;
+import org.jsoup.select.Elements;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
@@ -87,9 +90,12 @@ public class Crawler {
 			Element body = doc.select("div#poem-content div.field-items").first();
 			
 			Poem poem = new Poem();
-			poem.title = title.text();
-			poem.author = author.text();
-			poem.poem = this.stringify(body);
+			if (title != null)
+				poem.title = title.text();
+			if (author != null)
+				poem.author = author.text();
+			if (body != null)
+				poem.poem = this.stringify(body);
 			return poem;
 			
 		} catch(Exception ex) {
@@ -101,5 +107,30 @@ public class Crawler {
 	}
 	
 	
+	public ArrayList<String> link(String html) {
+		Document doc = Jsoup.parse(html);		
+		Elements content = doc.select("div.view-poems tbody td.views-field-title a");
+		ArrayList<String> links = new ArrayList<String>();
+		for (Element field : content)
+			links.add(field.attr("href"));
+		return links;
+	}
+	
+	
+	
+	public Poem collectParsedPoem(String url) {
+		String html = this.connect(url);
+		Poem poem = this.parse(html);
+		return poem;
+	}
+	
+	
+	public ArrayList<String> collectLinks(String url) {
+		String html = this.connect(url);
+		ArrayList<String> links = this.link(html);
+		return links;
+	}
+	
 	
 }
+

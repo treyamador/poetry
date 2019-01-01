@@ -30,24 +30,60 @@ public class Core {
 	
 	public void run() {
 		
-		/*
+		
+		int ext_i = 1, ext_f = 947;
+		
+		// TODO remove this
+		ext_f = 28;
+		ext_i = 28;
+		
+		String hostname = "https://www.poets.org";
+		String base_url = "/poetsorg/poems?page=";
+		for (int i = ext_i; i <= ext_f; ++i) {
+			
+			String burl = hostname+base_url+i;
+			ArrayList<String> a = this.crawler.collectLinks(burl);
+			this.pause(10);
+			
+			for (String link : a) {
+				String purl = hostname + link;
+				
+				Poem poem = this.crawler.collectParsedPoem(purl);
+				
+				if (poem != null) {
+					poem.print();
+				} else {
+					System.out.println("Poem at "+purl+" missing.");
+				}
+				this.pause(10);
+			}
+		}
+				
+	}
+	
+	
+	public void crawlTest() {
 		
 		ArrayList<String> urls = new ArrayList<String>();
 		urls.add("https://www.poets.org/poetsorg/poem/sea-glass");
 		urls.add("https://www.poets.org/poetsorg/poem/modern-love-x");
 		urls.add("https://www.poets.org/poetsorg/poem/largo");
+		urls.add("https://www.poets.org/poetsorg/poem/triple-moments-light-industry");
+		urls.add("https://www.poets.org/poetsorg/poem/winter-walk");
 		
 		for (int i = 0; i < urls.size(); ++i) {
 			String html = this.crawler.connect(urls.get(i));
 			Poem poem = this.crawler.parse(html);
 			poem.print();
-			this.pause(1);
+			this.pause(10);
 		}
 		
 		System.out.println("end of program");
 		
-		*/
-		
+	}
+	
+	
+	public void selectTest() {
 		
 		ResultSet result = this.database.select();
 		
@@ -62,7 +98,6 @@ public class Core {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
 		
 	}
 	

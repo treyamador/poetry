@@ -20,6 +20,7 @@ CREATE TABLE POEM
 		NumSections	INTEGER			NOT NULL,
 		Date		DATE,
 		PoetID		INTEGER,
+		URL		VARCHAR(100)		NOT NULL,
 		PRIMARY KEY (ID)
 	);
 
@@ -45,9 +46,9 @@ CREATE TABLE POET
 /* test data */
 
 
-INSERT INTO POEM(Title, NumSections, Date, PoetID) VALUES
-	('Metro', 2, '1920-09-12', 1),
-	('Infancy', 1, '1945-01-07', 2);
+INSERT INTO POEM(Title, NumSections, Date, PoetID, URL) VALUES
+	('Metro', 2, '1920-09-12', 1, 'www.poemone.com'),
+	('Infancy', 1, '1945-01-07', 2, 'www.poetizer.org/superpoem');
 
 INSERT INTO POEMSECTION(PoemID, SectionNum, Text) VALUES 
 	(1, 0, 'how much can it be?'),

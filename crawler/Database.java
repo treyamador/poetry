@@ -70,8 +70,10 @@ import java.sql.ResultSetMetaData;
 
 public class Database {
 	
+	
 	private final String DRIVER_NAME = "com.mysql.cj.jdbc.Driver";
 	private Connection connect = null;
+	
 	
     public Database(String db, String user, String pwd) {
     	this.init(db, user, pwd);
@@ -125,3 +127,4 @@ public class Database {
 	
 
 }
+
