@@ -71,12 +71,34 @@ public class Core {
 	
 	public void insertTest() {
 		
-		ArrayList<String> urls = new ArrayList<String>();
-		urls.add("https://www.poets.org/poetsorg/poem/house-called-tomorrow");
-		for (int i = 0; i < urls.size(); ++i) {
-			Poem poem = this.crawler.collectParsedPoem(urls.get(i));
-			this.database.insert(urls.get(i), poem);
-		}
+		//ArrayList<String> urls = new ArrayList<String>();
+		//urls.add("https://www.poets.org/poetsorg/poem/house-called-tomorrow");
+		//for (int i = 0; i < urls.size(); ++i) {
+		//	Poem poem = this.crawler.collectParsedPoem(urls.get(i));
+		//	this.database.insert(urls.get(i), poem);
+		//}
+		
+		Poem poem = new Poem();
+		poem.title = "An apex";
+		poem.author = "Greg Neilson";
+		poem.poem = "The time of birds died sometime between\r\n" + 
+				"When Robert Kennedy, Jr. disappeared and the Berlin\r\n" + 
+				"Wall came down. Hope was pro forma then.\r\n" + 
+				"We’d begun to talk about shelf-life. Parents\r\n" + 
+				"Thought they’d gotten somewhere. I can’t tell you\r\n" + 
+				"What to make of this now without also saying that when\r\n" + 
+				"I was 19 and read in a poem that the pure products of America go crazy\r\n" + 
+				"I felt betrayed. My father told me not to whistle because I\r\n" + 
+				"Was a girl. He gave me my first knife and said to keep it in my right\r\n" + 
+				"Hand and to keep my right hand in my right pocket when I walked at night.\r\n" + 
+				"He showed me the proper kind of fist and the sweet spot on the jaw\r\n" + 
+				"To leverage my shorter height and upper-cut someone down.\r\n" + 
+				"There were probably birds on the long walk home but I don’t\r\n" + 
+				"Remember them because pastoral is not meant for someone\r\n" + 
+				"With a fist in each pocket waiting for a reason. ";
+		String url = "poem.com/onething";
+		
+		this.database.insert(url, poem);
 		
 	}
 	

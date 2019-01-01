@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.ResultSet;
@@ -17,9 +18,9 @@ public class Database {
 	private final String DRIVER_NAME = "com.mysql.cj.jdbc.Driver";
 	private Connection connect = null;
 	
-	
 	private final int DEFAULT_SUBSECTION_LENGTH = 250;
 	private final String TEXT_COLUMN_NAME = "Text";
+	private final String POEM_ID_COLUMN = "ID";
 	
 	
     public Database(String db, String user, String pwd) {
@@ -71,6 +72,41 @@ public class Database {
     }
     
     
+    private String createPoemInsertQuery(String url, Poem poem) {
+    	
+    	String query = "INSERT into Poem(Title, PoetID, Date, URL) VALUES " + 
+    			"(" + 
+    				"'" + poem.title + "', " + 
+    				0 + ", " + 
+    				"NULL, " + 
+    				"'" + url + "'" + 
+    			")";
+    	
+    	return query;
+    	
+    }
+    
+    
+    public boolean executePreparedStatement(String query) {
+    	
+    	try {
+			PreparedStatement statement = this.connect.prepareStatement(query);
+			statement.execute();
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+    	
+    }
+    
+    
+    public boolean insertPoem(String url, Poem poem) {
+    	String query = this.createPoemInsertQuery(url, poem);
+    	return this.executePreparedStatement(query);
+    }
+    
+    
     private int getSubsectionPrecision() {
     	
     	int precision = this.DEFAULT_SUBSECTION_LENGTH;
@@ -102,7 +138,6 @@ public class Database {
 		
 	    ArrayList<String> subsects = new ArrayList<String>();
     	for (int i = 0; i < num_subsects; ++i) {
-    		
     		int sub_i = i*subsect_prec,
     			sub_f = (i+1)*subsect_prec;
     		if (sub_i < len_text) {
@@ -110,7 +145,6 @@ public class Database {
     					sub_f < len_text ? sub_f : len_text-1);
     			subsects.add(subsect);
     		}
-    		
     	}
     	
     	return subsects;
@@ -118,25 +152,37 @@ public class Database {
     }
     
     
-    private String createSubsectionInsert(String url, Poem poem) {
+    private int getLastID() {
     	
-    	String query = "INSERT into Poem(Title, NumSections, Date, PoetID, URL) VALUES ";
+    	int id = -1;
     	
-    	int len_text = poem.poem.length();
-    	int subsect_prec = this.getSubsectionPrecision();
-	    int num_subsects = (int)(len_text / subsect_prec) + 1;
-		
-	    System.out.println(subsect_prec+"\n");
-    	for (int i = 0; i < num_subsects; ++i) {
-    		
-    		int sub_i = i*subsect_prec;
-    		int sub_f = (i+1)*subsect_prec;
-    		if (sub_i < len_text) {
-    			String subsect = poem.poem.substring(sub_i, 
-    					sub_f < len_text ? sub_f : len_text-1);
-    			System.out.println(subsect+"\n");
-    		}
-    		
+    	try {
+			Statement statement = this.connect.createStatement();
+			ResultSet result = statement.executeQuery("SELECT LAST_INSERT_ID()");
+			result.first();
+			id = result.getInt(1);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+    	
+    	return id;
+    	
+    }
+    
+    
+    private String createSubsectionInsertQuery(int poemid, ArrayList<String> subsections) {
+    	
+    	String query = "INSERT INTO POEMSECTION(PoemID, SectionNum, Text) VALUES ";
+    	
+    	for (int i = 0; i < subsections.size(); ++i) {
+    		query +=  
+    				"(" +
+    						poemid + ", " +
+    						(i+1) + ", " +
+    						"'" + subsections.get(i) + "'" +
+    				")";
+    		if (i < subsections.size()-1)
+    			query += ", ";
     	}
     	
     	return query;
@@ -144,40 +190,27 @@ public class Database {
     }
     
     
-    public boolean insert(String url, Poem poem) {
+    public boolean insertSubsections(Poem poem) {
     	
-    	try {
-			
-    		Statement statement = this.connect.createStatement();
-    		ArrayList<String> subsections = this.createSubsections(poem);
-    		
-    		for (int i = 0; i < subsections.size(); ++i) {
-    			System.out.println(subsections.get(i)+"\n\n");
-    		}
-    		
-			
-    		// statement.executeQuery("");
-			
-			
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+    	int id = this.getLastID();
+    	if (id == -1)
+    		return false;
     	
+    	ArrayList<String> subsections = this.createSubsections(poem);
+    	String query = this.createSubsectionInsertQuery(id, subsections);
     	
-    	return false;
+    	return this.executePreparedStatement(query);
+    	
     }
     
-	
-
+    
+    public boolean insert(String url, Poem poem) {
+    	boolean inserted_poem = this.insertPoem(url, poem);
+    	if (inserted_poem)
+    		return this.insertSubsections(poem);
+    	return inserted_poem;
+    }
+    
+    
 }
-
-
-
-
-
-
-
-
-
 

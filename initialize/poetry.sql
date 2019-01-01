@@ -17,9 +17,8 @@ CREATE TABLE POEM
 	(
 		ID		INTEGER			NOT NULL AUTO_INCREMENT,
 		Title		VARCHAR(100),
-		NumSections	INTEGER			NOT NULL,
-		Date		DATE,
 		PoetID		INTEGER,
+		Date		DATE,
 		URL		VARCHAR(100)		NOT NULL,
 		PRIMARY KEY (ID)
 	);
@@ -37,7 +36,7 @@ CREATE TABLE POET
 	(
 		ID		INTEGER			NOT NULL,
 		Name		VARCHAR(100)		NOT NULL,
-		Birthdate	Date,
+		Birthdate	DATE,
 		PRIMARY KEY (ID)
 	);
 
@@ -46,13 +45,13 @@ CREATE TABLE POET
 /* test data */
 
 
-INSERT INTO POEM(Title, NumSections, Date, PoetID, URL) VALUES
-	('Metro', 2, '1920-09-12', 1, 'www.poemone.com'),
-	('Infancy', 1, '1945-01-07', 2, 'www.poetizer.org/superpoem');
+INSERT INTO POEM(Title, PoetID, Date, URL) VALUES
+	('Metro', 1, '1920-09-12', 'www.poemone.com'),
+	('Infancy', 2, '1945-01-07', 'www.poetizer.org/superpoem');
 
 INSERT INTO POEMSECTION(PoemID, SectionNum, Text) VALUES 
-	(1, 0, 'how much can it be?'),
-	(1, 1, 'it an be such truth...'),
-	(2, 0, 'a \n jungle');
+	(1, 1, 'how much can it be?'),
+	(1, 2, 'it an be such truth...'),
+	(2, 1, 'a \n jungle');
 
 
