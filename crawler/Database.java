@@ -20,7 +20,7 @@ public class Database {
 	
 	private final int DEFAULT_SUBSECTION_LENGTH = 250;
 	private final String TEXT_COLUMN_NAME = "Text";
-	private final String POEM_ID_COLUMN = "ID";
+	// private final String POEM_ID_COLUMN = "ID";
 	
 	
     public Database(String db, String user, String pwd) {
@@ -62,7 +62,7 @@ public class Database {
     	
     	try {
 			Statement statement = this.connect.createStatement();
-			result = statement.executeQuery("select * from poemsection");
+			result = statement.executeQuery("SELECT * from poemsection");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -74,7 +74,7 @@ public class Database {
     
     private String createPoemInsertQuery(String url, Poem poem) {
     	
-    	String query = "INSERT into Poem(Title, PoetID, Date, URL) VALUES " + 
+    	String query = "INSERT into poem(title, poet_id, date, url) VALUES " + 
     			"(" + 
     				"'" + poem.title + "', " + 
     				0 + ", " + 
@@ -113,7 +113,7 @@ public class Database {
     	
     	try {
     		
-    		ResultSetMetaData metadata = this.getMetaData("Poemsection");
+    		ResultSetMetaData metadata = this.getMetaData("poemsection");
 			for (int i = 1; i <= metadata.getColumnCount(); ++i) {
 				String column_name = metadata.getColumnName(i);
 				if (column_name == this.TEXT_COLUMN_NAME) {
@@ -172,7 +172,7 @@ public class Database {
     
     private String createSubsectionInsertQuery(int poemid, ArrayList<String> subsections) {
     	
-    	String query = "INSERT INTO POEMSECTION(PoemID, SectionNum, Text) VALUES ";
+    	String query = "INSERT INTO poemsection(poem_id, section_num, text) VALUES ";
     	
     	for (int i = 0; i < subsections.size(); ++i) {
     		query +=  

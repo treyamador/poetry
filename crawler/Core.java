@@ -84,8 +84,8 @@ public class Core {
 		poem.poem = "The time of birds died sometime between\r\n" + 
 				"When Robert Kennedy, Jr. disappeared and the Berlin\r\n" + 
 				"Wall came down. Hope was pro forma then.\r\n" + 
-				"We’d begun to talk about shelf-life. Parents\r\n" + 
-				"Thought they’d gotten somewhere. I can’t tell you\r\n" + 
+				"Weï¿½d begun to talk about shelf-life. Parents\r\n" + 
+				"Thought theyï¿½d gotten somewhere. I canï¿½t tell you\r\n" + 
 				"What to make of this now without also saying that when\r\n" + 
 				"I was 19 and read in a poem that the pure products of America go crazy\r\n" + 
 				"I felt betrayed. My father told me not to whistle because I\r\n" + 
@@ -93,7 +93,7 @@ public class Core {
 				"Hand and to keep my right hand in my right pocket when I walked at night.\r\n" + 
 				"He showed me the proper kind of fist and the sweet spot on the jaw\r\n" + 
 				"To leverage my shorter height and upper-cut someone down.\r\n" + 
-				"There were probably birds on the long walk home but I don’t\r\n" + 
+				"There were probably birds on the long walk home but I donï¿½t\r\n" + 
 				"Remember them because pastoral is not meant for someone\r\n" + 
 				"With a fist in each pocket waiting for a reason. ";
 		String url = "poem.com/onething";
