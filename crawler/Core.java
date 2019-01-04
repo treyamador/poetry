@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-// import org.jsoup.nodes.Document;
 
 
 public class Core {
@@ -13,10 +12,13 @@ public class Core {
 	private Crawler crawler = null;
 	private Database database = null;
 	
+	private Logger logger;
+	
 	
 	public Core() {
 		this.crawler = new Crawler();
 		this.database = new Database("poetry", "sqluser", "sqluserpw");
+		this.logger = new Logger();
 	}
 	
 	
@@ -31,7 +33,9 @@ public class Core {
 	
 	public void run() {
 				
-		this.insertTest();
+		// this.insertTest();
+		
+		this.testLogger();
 		
 	}
 	
@@ -140,6 +144,28 @@ public class Core {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		
+	}
+	
+	
+	public void testLogger() {
+		
+		int num = -1;
+		String entry = null;
+		entry = this.logger.currentEntry();
+		if (entry != null)
+			num = Integer.parseInt(entry);
+		System.out.println(num);
+		
+		this.logger.appendEntry("1");
+		this.logger.appendEntry("2");
+		this.logger.appendEntry("3");
+		
+		entry = this.logger.currentEntry();
+		if (entry != null)
+			num = Integer.parseInt(entry);
+		System.out.println(num);
+		
 		
 	}
 	
